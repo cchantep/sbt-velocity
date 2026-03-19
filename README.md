@@ -20,7 +20,7 @@ You need to update the `project/plugins.sbt`.
 resolvers ++= Seq(
   "Tatami Releases" at "https://raw.github.com/cchantep/tatami/master/releases")
 
-addSbtPlugin("cchantep" % "sbt-velocity" % "0.1")
+addSbtPlugin("cchantep" % "sbt-velocity" % "0.2")
 ```
 
 The plugin is not enable automatically, it can be done per-project in the build.

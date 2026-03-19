@@ -1,5 +1,5 @@
 package test
 
 object BuildVersion {
-  val scalaVersion = "2.13.5"
+  val scalaVersion = "2.13.18"
 }

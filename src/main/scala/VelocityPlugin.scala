@@ -5,7 +5,7 @@ import scala.util.control.NonFatal
 import sbt.Keys._
 import sbt._
 import sbt.plugins.JvmPlugin
-import sbt.librarymanagement.Configuration
+import sbt.Configuration
 
 import org.apache.velocity.VelocityContext
 import org.apache.velocity.app.VelocityEngine
@@ -41,58 +41,50 @@ object VelocityPlugin extends AutoPlugin {
     },
     velocityFileNaming := { (n: String) => n.stripSuffix(".vm") },
     velocityEngineProperties := Map.empty[String, String]
-  ) ++ sourceGenerator(Compile) ++ sourceGenerator(
-    Test) ++ resourceGenerator(Compile) ++ resourceGenerator(Test)
+  ) ++ inConfig(Compile)(perConfigSettings) ++ inConfig(Test)(
+    perConfigSettings)
 
-  // ---
+  private def perConfigSettings: Seq[Def.Setting[_]] = Seq(
+    (sourceDirectory in velocityGeneration) := sourceDirectory.value / "vtmpl",
+    (sourceManaged in velocityGeneration) := sourceManaged.value / "velocity",
+    sourceGenerators += Def.task[Seq[File]] {
+      val templateDir = (sourceDirectory in velocityGeneration).value
 
-  private def sourceGenerator(config: Configuration): Seq[Def.Setting[_]] = {
-    val scope = config / velocityGeneration
-
-    Seq(
-      scope / sourceDirectory := (config / sourceDirectory).value / "vtmpl",
-      scope / sourceManaged := (config / sourceManaged).value / "velocity",
-      config / sourceGenerators += Def.task[Seq[File]] {
-        val props = velocityEngineProperties.value + (
-          "file.resource.loader.path" -> (
-            scope / sourceDirectory).value.getAbsolutePath
-        )
+      val props = velocityEngineProperties.value + (
+        "file.resource.loader.path" -> templateDir.getAbsolutePath
+      )
 
       generate(
         logger = streams.value.log,
         engineProperties = props,
-        templateDir = (scope / sourceDirectory).value,
+        templateDir = templateDir,
         context = velocityContext.value,
-        targetDir = (scope / sourceManaged).value,
+        targetDir = (sourceManaged in velocityGeneration).value,
         fileNaming = velocityFileNaming.value)
-    }.taskValue)
-  }
+    }.taskValue,
 
-  private def resourceGenerator(config: Configuration): Seq[Def.Setting[_]] = {
-    val scope = config / velocityGeneration
+    (resourceDirectory in velocityGeneration) := resourceDirectory.value / "vtmpl",
+    (resourceManaged in velocityGeneration) :=
+      crossTarget.value / "resource_managed" / "velocity",
+    resourceGenerators += Def.task[Seq[File]] {
+      val templateDir = (resourceDirectory in velocityGeneration).value
 
-    Seq(
-      scope / resourceDirectory := (config / resourceDirectory).value / "vtmpl",
-      scope / resourceManaged := (resourceManaged).value / "velocity",
-      config / resourceGenerators += Def.task[Seq[File]] {
-        val props = velocityEngineProperties.value + (
-          "file.resource.loader.path" -> (
-            scope / resourceDirectory).value.getAbsolutePath
-        )
+      val props = velocityEngineProperties.value + (
+        "file.resource.loader.path" -> templateDir.getAbsolutePath
+      )
 
-        generate(
-          logger = streams.value.log,
-          engineProperties = props,
-          templateDir = (scope / resourceDirectory).value,
-          context = velocityContext.value,
-          targetDir = (scope / resourceManaged).value,
-          fileNaming = velocityFileNaming.value)
-      }.taskValue
-    )
-  }
+      generate(
+        logger = streams.value.log,
+        engineProperties = props,
+        templateDir = templateDir,
+        context = velocityContext.value,
+        targetDir = (resourceManaged in velocityGeneration).value,
+        fileNaming = velocityFileNaming.value)
+    }.taskValue
+  )
 
   private def generate(
-    logger: util.Logger,
+    logger: sbt.Logger,
     engineProperties: Map[String, String],
     templateDir: File,
     context: VelocityContext,
@@ -115,7 +107,7 @@ object VelocityPlugin extends AutoPlugin {
 
     engine.init(eps)
 
-    io.IO.listFiles(templateDir, io.GlobFilter("*.vm")).flatMap { tf =>
+    sbt.IO.listFiles(templateDir, sbt.GlobFilter("*.vm")).flatMap { tf =>
       val name = tf.getName
       val tmpl = engine.getTemplate(name)
       val out = targetDir / fileNaming(name)
