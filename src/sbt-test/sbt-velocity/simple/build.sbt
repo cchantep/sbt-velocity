@@ -6,10 +6,10 @@ version := "0.2"
 
 scalaVersion := "2.12.20"
 
-crossScalaVersions := Seq(scalaVersion.value, "2.13.18")
+crossScalaVersions := Seq(scalaVersion.value, "3.3.8")
 
 libraryDependencies ++= {
-  val specsVer = "4.19.0"
+  val specsVer = "4.21.0"
 
   Seq(
     "org.specs2" %% "specs2-core" % specsVer,

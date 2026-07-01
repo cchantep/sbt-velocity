@@ -45,10 +45,10 @@ object VelocityPlugin extends AutoPlugin {
     perConfigSettings)
 
   private def perConfigSettings: Seq[Def.Setting[_]] = Seq(
-    (sourceDirectory in velocityGeneration) := sourceDirectory.value / "vtmpl",
-    (sourceManaged in velocityGeneration) := sourceManaged.value / "velocity",
+    velocityGeneration / sourceDirectory := sourceDirectory.value / "vtmpl",
+    velocityGeneration / sourceManaged := sourceManaged.value / "velocity",
     sourceGenerators += Def.task[Seq[File]] {
-      val templateDir = (sourceDirectory in velocityGeneration).value
+      val templateDir = (velocityGeneration / sourceDirectory).value
 
       val props = velocityEngineProperties.value + (
         "file.resource.loader.path" -> templateDir.getAbsolutePath
@@ -59,15 +59,15 @@ object VelocityPlugin extends AutoPlugin {
         engineProperties = props,
         templateDir = templateDir,
         context = velocityContext.value,
-        targetDir = (sourceManaged in velocityGeneration).value,
+        targetDir = (velocityGeneration / sourceManaged).value,
         fileNaming = velocityFileNaming.value)
     }.taskValue,
 
-    (resourceDirectory in velocityGeneration) := resourceDirectory.value / "vtmpl",
-    (resourceManaged in velocityGeneration) :=
+    velocityGeneration / resourceDirectory := resourceDirectory.value / "vtmpl",
+    velocityGeneration / resourceManaged :=
       crossTarget.value / "resource_managed" / "velocity",
     resourceGenerators += Def.task[Seq[File]] {
-      val templateDir = (resourceDirectory in velocityGeneration).value
+      val templateDir = (velocityGeneration / resourceDirectory).value
 
       val props = velocityEngineProperties.value + (
         "file.resource.loader.path" -> templateDir.getAbsolutePath
@@ -78,7 +78,7 @@ object VelocityPlugin extends AutoPlugin {
         engineProperties = props,
         templateDir = templateDir,
         context = velocityContext.value,
-        targetDir = (resourceManaged in velocityGeneration).value,
+        targetDir = (velocityGeneration / resourceManaged).value,
         fileNaming = velocityFileNaming.value)
     }.taskValue
   )
