@@ -1,45 +1,45 @@
 > +clean
 
 # 2.12
-> ++2.12.13
+> ++2.12.20
 
-$ absent target/scala-2.12/src_managed/main/velocity/Foo.scala
-$ absent target/scala-2.12/resource_managed/velocity/app.properties
-$ absent target/scala-2.12/src_managed/test/velocity/FooSpec.scala
-
-> compile
-
-$ exists target/scala-2.12/src_managed/main/velocity/Foo.scala
-$ must-mirror target/scala-2.12/src_managed/main/velocity/Foo.scala src/test/resources/scala-2.12/Foo.scala
-
-> package
-
-$ exists target/scala-2.12/resource_managed/velocity/app.properties
-$ must-mirror target/scala-2.12/resource_managed/velocity/app.properties src/test/resources/scala-2.12/app.properties
-
-> test:compile
-
-$ exists target/scala-2.12/src_managed/test/velocity/FooSpec.scala
-$ must-mirror target/scala-2.12/src_managed/test/velocity/FooSpec.scala src/test/resources/scala-2.12/FooSpec.scala
-
-# 2.13
-> ++2.13.5
-
-$ absent target/scala-2.13/src_managed/main/velocity/Foo.scala
-$ absent target/scala-2.13/resource_managed/velocity/app.properties
-$ absent target/scala-2.13/src_managed/test/velocity/FooSpec.scala
+$ absent target/out/jvm/scala-2.12.20/sbt-velocity-test-simple/src_managed/main/velocity/Foo.scala
+$ absent target/out/jvm/scala-2.12.20/sbt-velocity-test-simple/resource_managed/velocity/app.properties
+$ absent target/out/jvm/scala-2.12.20/sbt-velocity-test-simple/src_managed/test/velocity/FooSpec.scala
 
 > compile
 
-$ exists target/scala-2.13/src_managed/main/velocity/Foo.scala
-$ must-mirror target/scala-2.13/src_managed/main/velocity/Foo.scala src/test/resources/scala-2.13/Foo.scala
+$ exists target/out/jvm/scala-2.12.20/sbt-velocity-test-simple/src_managed/main/velocity/Foo.scala
+$ must-mirror target/out/jvm/scala-2.12.20/sbt-velocity-test-simple/src_managed/main/velocity/Foo.scala src/test/resources/scala-2.12/Foo.scala
 
 > package
 
-$ exists target/scala-2.13/resource_managed/velocity/app.properties
-$ must-mirror target/scala-2.13/resource_managed/velocity/app.properties src/test/resources/scala-2.13/app.properties
+$ exists target/out/jvm/scala-2.12.20/sbt-velocity-test-simple/resource_managed/velocity/app.properties
+$ must-mirror target/out/jvm/scala-2.12.20/sbt-velocity-test-simple/resource_managed/velocity/app.properties src/test/resources/scala-2.12/app.properties
 
-> test:compile
+> Test / compile
 
-$ exists target/scala-2.13/src_managed/test/velocity/FooSpec.scala
-$ must-mirror target/scala-2.13/src_managed/test/velocity/FooSpec.scala src/test/resources/scala-2.13/FooSpec.scala
+$ exists target/out/jvm/scala-2.12.20/sbt-velocity-test-simple/src_managed/test/velocity/FooSpec.scala
+$ must-mirror target/out/jvm/scala-2.12.20/sbt-velocity-test-simple/src_managed/test/velocity/FooSpec.scala src/test/resources/scala-2.12/FooSpec.scala
+
+# 3.x
+> ++3.3.8
+
+$ absent target/out/jvm/scala-3.3.8/sbt-velocity-test-simple/src_managed/main/velocity/Foo.scala
+$ absent target/out/jvm/scala-3.3.8/sbt-velocity-test-simple/resource_managed/velocity/app.properties
+$ absent target/out/jvm/scala-3.3.8/sbt-velocity-test-simple/src_managed/test/velocity/FooSpec.scala
+
+> compile
+
+$ exists target/out/jvm/scala-3.3.8/sbt-velocity-test-simple/src_managed/main/velocity/Foo.scala
+$ must-mirror target/out/jvm/scala-3.3.8/sbt-velocity-test-simple/src_managed/main/velocity/Foo.scala src/test/resources/scala-3.3.8/Foo.scala
+
+> package
+
+$ exists target/out/jvm/scala-3.3.8/sbt-velocity-test-simple/resource_managed/velocity/app.properties
+$ must-mirror target/out/jvm/scala-3.3.8/sbt-velocity-test-simple/resource_managed/velocity/app.properties src/test/resources/scala-3.3.8/app.properties
+
+> Test / compile
+
+$ exists target/out/jvm/scala-3.3.8/sbt-velocity-test-simple/src_managed/test/velocity/FooSpec.scala
+$ must-mirror target/out/jvm/scala-3.3.8/sbt-velocity-test-simple/src_managed/test/velocity/FooSpec.scala src/test/resources/scala-3.3.8/FooSpec.scala
